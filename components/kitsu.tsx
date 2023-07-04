@@ -72,10 +72,10 @@ const MangaSearch = () => {
     }
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    formik.setFieldValue(name, value);
-  };
+  // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = event.target;
+  //   formik.setFieldValue(name, value);
+  // };
 
   return (
     <div className="text-black flex flex-col">
@@ -86,7 +86,7 @@ const MangaSearch = () => {
         name="searchQuery"
         placeholder="Title"
         value={formik.values.searchQuery}
-        onChange={handleInputChange}
+        onChange={formik.handleChange}
         className='p-2 rounded-md text-gray-400 mb-8 mt-4'
       />
 
@@ -97,7 +97,7 @@ const MangaSearch = () => {
           aria-label="categories"
           name="searchCategories"
           value={formik.values.searchCategories}
-          onChange={handleInputChange}
+          onChange={formik.handleChange}
         >
           <FormControlLabel value="action" control={<Radio />} label="Action" />
           <FormControlLabel value="adventure" control={<Radio />} label="Adventure" />
