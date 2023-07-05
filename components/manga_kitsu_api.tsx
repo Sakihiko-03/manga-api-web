@@ -39,19 +39,19 @@ const MangaKitsuAPI = () => {
   const [links, setLinks] = useState<{ first: string; next: string; last: string }>();
   const [countMeta, setCount] = useState<number>(1);
   const [showSkeleton, setShowSkeleton] = useState(true);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const formik = useFormik({
     initialValues: {
       searchQuery: '',
       searchCategories: '',
-      page: 1,
     },
     onSubmit: () => { },
   });
 
   useEffect(() => {
-    fetchMangaData(formik.values.page, formik.values.searchQuery, formik.values.searchCategories);
-  }, [formik.values.page, formik.values.searchQuery, formik.values.searchCategories]);
+    fetchMangaData(currentPage, formik.values.searchQuery, formik.values.searchCategories);
+  }, [currentPage, formik.values.searchQuery, formik.values.searchCategories]);
 
   const fetchMangaData = async (page: number, searchQuery?: string, searchCategories?: string) => {
     try {
@@ -94,7 +94,7 @@ const MangaKitsuAPI = () => {
   };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
-    formik.setFieldValue('page', page);
+    setCurrentPage(page);
   };
 
   return (
@@ -141,7 +141,7 @@ const MangaKitsuAPI = () => {
                 componentName='page'
                 id='page'
                 count={Math.ceil(countMeta / 20) ?? 1}
-                page={formik.values.page}
+                page={currentPage}
                 onChange={handlePageChange}
                 // onChange={formik.handleChange}
                 variant="outlined"
