@@ -4,7 +4,7 @@ const CardAni = (value: { title?: string, status?: string, img?: string, imgModa
     const [showModal, setShowModal] = useState(false);
     return (
         <>
-            <div className='flex flex-col lg:flex-row bg-gray-800 rounded-2xl overflow-hidden shadow-md mb-8'>
+            <div className='flex flex-col lg:flex-row bg-gray-800 rounded-2xl overflow-hidden shadow-md'>
                 <img src={value.img} alt={value.title} />
                 <div className='m-8'>
                     <p className='text-lg text-white'>{value.title}</p>

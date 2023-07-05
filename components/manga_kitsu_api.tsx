@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useFormik, Formik, Form, Field } from 'formik';
+import { useFormik } from 'formik';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -7,7 +7,6 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import CardAni from './card';
 import Pagination from '@mui/material/Pagination';
-
 
 type resultProps = {
   id: string;
@@ -40,9 +39,12 @@ type pageLinks = {
   attributes: Attributes;
 };
 
-const MangaSearch = () => {
+const MangaKitsuAPI = () => {
   const [result, setResult] = useState<resultProps[]>([]);
-  const [page, setPage] = useState<pageLinks[]>([]);
+  const [links, setLinks] = useState<{ first: string; next: string; last: string }>();
+
+  const [countMeta, setCount] = useState<number>(1);
+
   const formik = useFormik({
     initialValues: {
       searchQuery: '',
@@ -53,13 +55,14 @@ const MangaSearch = () => {
   });
 
   useEffect(() => {
-    fetchMangaData(formik.values.searchQuery, formik.values.searchCategories);
-  }, [formik.values.searchQuery, formik.values.searchCategories]);
+    fetchMangaData(formik.values.page, formik.values.searchQuery, formik.values.searchCategories);
+  }, [formik.values.page, formik.values.searchQuery, formik.values.searchCategories]);
 
-  const fetchMangaData = async (searchQuery: string, searchCategories?: string) => {
+  const fetchMangaData = async (page: number, searchQuery?: string, searchCategories?: string) => {
     try {
-      let apiUrl = 'https://kitsu.io/api/edge/manga?sort=-averageRating&popularityRank&page[limit]=20&page[offset]=0';
-      // let apiUrl2 = 'https://kitsu.io/api/edge/manga?sort=-averageRating&popularityRank&page[limit]=20&page[offset]=20';
+      // let apiUrl = `https://kitsu.io/api/edge/manga?page[limit]=20&page[offset]=${(page - 1) * 20}&sort=ratingRank`;
+      let apiUrl = `https://kitsu.io/api/edge/anime?page[limit]=20&page[offset]=${(page - 1) * 20}`;
+      let apiUrlRank = `https://kitsu.io/api/edge/anime?page[limit]=20&page[offset]=${(page - 1) * 20}&sort=ratingRank`;
 
       if (searchQuery !== '') {
         apiUrl += `&filter[text]=${searchQuery}`;
@@ -73,21 +76,34 @@ const MangaSearch = () => {
           apiUrl += `&filter[text]=${searchQuery}`;
         }
       }
+      else {
+        apiUrl = apiUrlRank
+      }
 
       const response = await fetch(apiUrl);
       const mangaData = await response.json();
       const data = mangaData['data'];
+      const meta = mangaData['meta']['count'];
+      setCount(meta)
       const links = mangaData['links'];
-      setPage(links);
+
+      if (links && links.last) {
+        setLinks(links);
+      }
+
       setResult(data);
+
     } catch (error) {
       console.error('Error fetching manga data:', error);
     }
   };
 
+  const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
+    formik.setFieldValue('page', page);
+  };
+
   return (
     <div className="text-black flex flex-col">
-      <Pagination id='page' count={10} page={formik.values.page} onChange={formik.handleChange} variant="outlined" shape="rounded" />
 
       <p>Search Bar</p>
       <input
@@ -116,6 +132,21 @@ const MangaSearch = () => {
         </RadioGroup>
       </FormControl>
 
+      {links && links.last && (
+        <Pagination
+          className='mb-8'
+          componentName='page'
+          id='page'
+          count={Math.ceil(countMeta / 20) ?? 1}
+          page={formik.values.page}
+          onChange={handlePageChange}
+          // onChange={formik.handleChange}
+          variant="outlined"
+          shape="rounded"
+        />
+      )}
+
+
       <div className='grid grid-cols-2 gap-4 lg:gap-8'>
         {result.map((value) => (
           <div className="text-black" key={value.id}>
@@ -133,4 +164,4 @@ const MangaSearch = () => {
   );
 };
 
-export default MangaSearch;
+export default MangaKitsuAPI;
