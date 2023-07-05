@@ -7,6 +7,7 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import CardAni from './card';
 import Pagination from '@mui/material/Pagination';
+import SkeletonCard from './skeleton';
 
 type resultProps = {
   id: string;
@@ -33,17 +34,11 @@ type PosterImage = {
   medium: string;
 };
 
-type pageLinks = {
-  id: string;
-  type: string;
-  attributes: Attributes;
-};
-
 const MangaKitsuAPI = () => {
   const [result, setResult] = useState<resultProps[]>([]);
   const [links, setLinks] = useState<{ first: string; next: string; last: string }>();
-
   const [countMeta, setCount] = useState<number>(1);
+  const [showSkeleton, setShowSkeleton] = useState(true);
 
   const formik = useFormik({
     initialValues: {
@@ -60,7 +55,6 @@ const MangaKitsuAPI = () => {
 
   const fetchMangaData = async (page: number, searchQuery?: string, searchCategories?: string) => {
     try {
-      // let apiUrl = `https://kitsu.io/api/edge/manga?page[limit]=20&page[offset]=${(page - 1) * 20}&sort=ratingRank`;
       let apiUrl = `https://kitsu.io/api/edge/anime?page[limit]=20&page[offset]=${(page - 1) * 20}`;
       let apiUrlRank = `https://kitsu.io/api/edge/anime?page[limit]=20&page[offset]=${(page - 1) * 20}&sort=ratingRank`;
 
@@ -92,6 +86,7 @@ const MangaKitsuAPI = () => {
       }
 
       setResult(data);
+      setShowSkeleton(false);
 
     } catch (error) {
       console.error('Error fetching manga data:', error);
@@ -119,6 +114,7 @@ const MangaKitsuAPI = () => {
       <FormControl className='mb-8'>
         <FormLabel className='text-black'>Categories</FormLabel>
         <RadioGroup
+          color='transparent'
           row
           aria-label="categories"
           name="searchCategories"
@@ -126,40 +122,50 @@ const MangaKitsuAPI = () => {
           onChange={formik.handleChange}
         >
           <FormControlLabel value="action" control={<Radio />} label="Action" />
-          <FormControlLabel value="adventure" control={<Radio />} label="Adventure" />
+          <FormControlLabel value="fantasy" control={<Radio />} label="Fantasy" />
+          <FormControlLabel value="horror" control={<Radio />} label="Horror" />
+          <FormControlLabel value="isekai" control={<Radio />} label="Isekai" />
+          <FormControlLabel value="demon" control={<Radio />} label="Demon" />
           <FormControlLabel value="sports" control={<Radio />} label="Sports" />
           <FormControlLabel value="music" control={<Radio />} label="Music" />
         </RadioGroup>
       </FormControl>
+      {
+        showSkeleton ? (
+          <SkeletonCard />
+        ) : (
+          <>
+            {links && links.last && (
+              <Pagination
+                className='mb-8 flex justify-center'
+                componentName='page'
+                id='page'
+                count={Math.ceil(countMeta / 20) ?? 1}
+                page={formik.values.page}
+                onChange={handlePageChange}
+                // onChange={formik.handleChange}
+                variant="outlined"
+                shape="rounded"
+              />
+            )}
 
-      {links && links.last && (
-        <Pagination
-          className='mb-8'
-          componentName='page'
-          id='page'
-          count={Math.ceil(countMeta / 20) ?? 1}
-          page={formik.values.page}
-          onChange={handlePageChange}
-          // onChange={formik.handleChange}
-          variant="outlined"
-          shape="rounded"
-        />
-      )}
+            <div className='grid grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-8'>
+              {result.map((value) => (
+                <div className="text-black" key={value.id}>
+                  <CardAni title={value.attributes.titles.en}
+                    status={value.attributes.status}
+                    img={value.attributes.posterImage.small}
+                    imgModal={value.attributes.posterImage.medium}
+                    story={value.attributes.description}
+                    ratingRank={value.attributes.ratingRank}
+                    averageRating={value.attributes.averageRating} />
+                </div>
+              ))}
+            </div>
+          </>
+        )
+      }
 
-
-      <div className='grid grid-cols-2 gap-4 lg:gap-8'>
-        {result.map((value) => (
-          <div className="text-black" key={value.id}>
-            <CardAni title={value.attributes.titles.en}
-              status={value.attributes.status}
-              img={value.attributes.posterImage.small}
-              imgModal={value.attributes.posterImage.medium}
-              story={value.attributes.description}
-              ratingRank={value.attributes.ratingRank}
-              averageRating={value.attributes.averageRating} />
-          </div>
-        ))}
-      </div>
     </div>
   );
 };
