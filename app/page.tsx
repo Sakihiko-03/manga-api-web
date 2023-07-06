@@ -1,8 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { FormControl, FormLabel, TextField, RadioGroup, FormControlLabel, Radio, Card, Button, CardActionArea, CardActions, CardMedia, CardContent, Typography, Pagination } from '@mui/material';
+import { FormControl, FormLabel, TextField, RadioGroup, FormControlLabel, Radio, Card, Button, CardActionArea, CardActions, CardMedia, CardContent, Typography, Pagination, Modal } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { useFormik, Formik, Form, Field } from 'formik';
 import axios from 'axios';
+import ScrollToTopButton from '@/components/button_to_top';
 
 // พวกนี้มันต้องมีไหมนะ?
 type AniData = {
@@ -33,9 +35,9 @@ type PosterImage = {
 export default function Home() {
   const [AniData, setAniData] = useState<AniData[]>([]);
   const [Links, setLinks] = useState([]);
-  const [TotalAni, setTotalAni] = useState(0);
+  const [TotalAni, setTotalAni] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // copy อันเดิมมาก่อน
   const formik = useFormik({
     initialValues: {
       searchTitle: '',
@@ -45,49 +47,48 @@ export default function Home() {
   });
 
   useEffect(() => {
-    GetAnimeData(formik.values.searchTitle, formik.values.searchCategories);
-  }, [formik.values.searchTitle, formik.values.searchCategories]);
+    GetAnimeData(currentPage, formik.values.searchTitle, formik.values.searchCategories);
+  }, [currentPage, formik.values.searchTitle, formik.values.searchCategories]);
 
   // ลองใช้ axios ตามพี่พลอย
-  const GetAnimeData = async (searchTitle?: string, searchCategories?: string) => {
+  const GetAnimeData = async (page: number, searchTitle?: string, searchCategories?: string) => {
     try {
-      // เปิดมาอยากให้แสดงตาม ratingRank เฉยๆ แต่มัน & หลายรอบไม่ได้
-      const apiRank = 'https://kitsu.io/api/edge/anime?sort=ratingRank';
+      // const apiRank = 'https://kitsu.io/api/edge/anime?sort=ratingRank';
       let api = `https://kitsu.io/api/edge/anime`;
-      if (searchTitle !== '' && searchCategories !== '') {
-        api += `?filter[text]=${searchTitle}&filter[categories]=${searchCategories}`;
-      }
-      else if (searchTitle !== '') {
-        api += `?filter[text]=${searchTitle}`;
+
+      // pagination chat gpt มามันเลื่อน offset เอา
+      const offset = (page - 1) * 20;
+      api += `?page[limit]=20&page[offset]=${offset}`;
+
+      // TextField before Radio
+      if (searchTitle !== '') {
+        api += `&filter[text]=${searchTitle}`;
         if (searchCategories !== '') {
-          api += `?filter[categories]=${searchCategories}`;
+          api += `&filter[categories]=${searchCategories}`;
         }
       }
+
+      // Radio before TextField
       else if (searchCategories !== '') {
-        api += `?filter[categories]=${searchCategories}`;
+        api += `&filter[categories]=${searchCategories}`;
         if (searchTitle !== '') {
-          api += `?filter[text]=${searchTitle}`;
+          api += `&filter[text]=${searchTitle}`;
         }
       }
+
       else {
-        api = apiRank;
+        api += `&sort=ratingRank`;
       }
+
       const response = await axios.get(api);
 
-      // const response = await axios.get(`https://kitsu.io/api/edge/anime?filter[text]=${searchTitle}&filter[categories]=${searchCategories}`);
-      // const response = await axios.get(`https://kitsu.io/api/edge/anime?sort=ratingRank&filter[text]=${searchTitle}`);
-      // console.log(response.data);
-      // console.log(response.data.data);
-
       if (response.status === 200) {
-        // show 10
         const data = response.data.data;
         setAniData(data);
-        // มี first prev next last
+        // มี first prev next last แต่ใช้ยังไงวะเนี่ยยยย
         const links = response.data.links;
         setLinks(links);
-        // จำนวน anime 19288
-        const count: number = response.data.meta;
+        const count = response.data.meta.count;
         setTotalAni(count);
       }
     } catch (error) {
@@ -95,12 +96,12 @@ export default function Home() {
     }
 
   }
-  // พี่พลอยแนะนำให้เขียนแบบ prop value ไว้เดี๋ยวลองไปดู
+
   const CardAnime = () => {
     return (
       <>
         {AniData.map((data) => (
-          <Card sx={{ maxWidth: 345 }}>
+          <Card key={data.id} sx={{ maxWidth: 345 }}>
             <CardActionArea>
               <CardMedia
                 component="img"
@@ -118,9 +119,7 @@ export default function Home() {
               </CardContent>
             </CardActionArea>
             <CardActions>
-              <Button size="small" color="primary">
-                info
-              </Button>
+              <ModalBox value={data.attributes} />
             </CardActions>
           </Card>
         ))}
@@ -151,11 +150,52 @@ export default function Home() {
           <FormControlLabel value="fantasy" control={<Radio />} label="fantasy" />
         </RadioGroup>
       </FormControl>
-      <Pagination count={10} variant="outlined" shape="rounded" />
+      <Pagination
+        count={Math.ceil(TotalAni / 20)}
+        page={currentPage}
+        onChange={(e, value) => setCurrentPage(value)}
+        shape="rounded" />
       <div className='grid grid-cols-2 gap-4 lg:grid-cols-3'>
         <CardAnime />
       </div>
+      <ScrollToTopButton />
     </div>
   )
 }
 
+function ModalBox(props: any) {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  return (
+    <div>
+      <Button variant="outlined" onClick={handleOpen}>
+        info
+      </Button>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {props.value.titles.en}
+        </DialogTitle>
+        <DialogContent>
+          <CardMedia
+            component="img"
+            height=""
+            image={props.value.posterImage.medium}
+            alt={props.value.titles.en}
+          />
+          <DialogContentText id="alert-dialog-description">
+            {props.value.description}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>close</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+}

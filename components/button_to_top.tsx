@@ -29,7 +29,7 @@ const ScrollToTopButton = () => {
             {showBtn && (
                 <ArrowUpCircleIcon
                     onClick={scrollToTop}
-                    className='my-16 mx-8 h-10 w-10 cursor-pointer text-slate-400/80 dark:text-slate-300/80 hover:text-slate-500 dark:hover:text-slate-200'
+                    className='my-8 mx-8 h-10 w-10 text-gray-700/80 hover:text-gray-400/80'
                 />
             )}
         </div>
