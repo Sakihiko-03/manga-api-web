@@ -1,12 +1,15 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { FormControl, FormLabel, TextField, RadioGroup, FormControlLabel, Radio, Card, Button, CardActionArea, CardActions, CardMedia, CardContent, Typography, Pagination, Modal } from '@mui/material';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { FormControl, FormLabel, TextField, RadioGroup, FormControlLabel, Radio, Card, Button, CardActionArea, CardActions, CardMedia, CardContent, Typography, Pagination, Stack } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Chip, Rating } from '@mui/material';
+import StarIcon from '@mui/icons-material/Star';
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import ScheduleRoundedIcon from '@mui/icons-material/ScheduleRounded';
 import { useFormik, Formik, Form, Field } from 'formik';
 import axios from 'axios';
 import ScrollToTopButton from '@/components/button_to_top';
 
-// พวกนี้มันต้องมีไหมนะ?
 type AniData = {
   id: string;
   type: string;
@@ -50,7 +53,6 @@ export default function Home() {
     GetAnimeData(currentPage, formik.values.searchTitle, formik.values.searchCategories);
   }, [currentPage, formik.values.searchTitle, formik.values.searchCategories]);
 
-  // ลองใช้ axios ตามพี่พลอย
   const GetAnimeData = async (page: number, searchTitle?: string, searchCategories?: string) => {
     try {
       // const apiRank = 'https://kitsu.io/api/edge/anime?sort=ratingRank';
@@ -101,24 +103,33 @@ export default function Home() {
     return (
       <>
         {AniData.map((data) => (
-          <Card key={data.id} sx={{ maxWidth: 345 }}>
-            <CardActionArea>
-              <CardMedia
-                component="img"
-                height=""
-                image={data.attributes.posterImage.small}
-                alt={data.attributes.titles.en}
+          <Card key={data.id} sx={{ maxWidth: 345 }} className='rounded-xl'>
+            <CardMedia
+              component="img"
+              height=""
+              image={data.attributes.posterImage.small}
+              alt={data.attributes.titles.en}
+            />
+            <CardContent>
+              <Typography gutterBottom variant="body1" component="div">
+                {data.attributes.titles.en}
+              </Typography>
+              <Rating
+                value={Number(data.attributes.averageRating) * 5 / 100}
+                readOnly
+                precision={0.05}
+                emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
               />
-              <CardContent>
-                <Typography gutterBottom variant="h6" component="div">
-                  {data.attributes.titles.en}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  status: {data.attributes.status}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-            <CardActions>
+              <Stack direction="row" spacing={1}>
+                <Chip icon={<MilitaryTechIcon />} label={data.attributes.ratingRank} color="secondary" variant="outlined" size="small" />
+                {data.attributes.status == 'finished' ? (
+                  <Chip icon={<CheckCircleRoundedIcon />} label={data.attributes.status} color="error" variant="outlined" size="small" />
+                ) : (
+                  <Chip icon={<ScheduleRoundedIcon />} label={data.attributes.status} color="success" variant="outlined" size="small" />
+                )}
+              </Stack>
+            </CardContent>
+            <CardActions className='flex justify-end'>
               <ModalBox value={data.attributes} />
             </CardActions>
           </Card>
@@ -128,8 +139,9 @@ export default function Home() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col gap-8 items-center p-4 lg:p-16 bg-gray-300">
+    <div className="flex min-h-screen flex-col gap-8 items-center p-4 lg:p-16 bg-gray-400">
       <TextField
+      sx={{ width: '40ch' }}
         value={formik.values.searchTitle}
         onChange={formik.handleChange}
         name='searchTitle'
@@ -169,7 +181,7 @@ function ModalBox(props: any) {
   const handleClose = () => setOpen(false);
   return (
     <div>
-      <Button variant="outlined" onClick={handleOpen}>
+      <Button onClick={handleOpen}>
         info
       </Button>
       <Dialog
