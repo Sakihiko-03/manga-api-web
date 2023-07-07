@@ -37,7 +37,6 @@ type PosterImage = {
 
 export default function Home() {
   const [AniData, setAniData] = useState<AniData[]>([]);
-  const [Links, setLinks] = useState([]);
   const [TotalAni, setTotalAni] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -87,9 +86,6 @@ export default function Home() {
       if (response.status === 200) {
         const data = response.data.data;
         setAniData(data);
-        // มี first prev next last แต่ใช้ยังไงวะเนี่ยยยย
-        const links = response.data.links;
-        setLinks(links);
         const count = response.data.meta.count;
         setTotalAni(count);
       }
@@ -99,49 +95,10 @@ export default function Home() {
 
   }
 
-  const CardAnime = () => {
-    return (
-      <>
-        {AniData.map((data) => (
-          <Card key={data.id} sx={{ maxWidth: 345 }} className='rounded-xl'>
-            <CardMedia
-              component="img"
-              height=""
-              image={data.attributes.posterImage.small}
-              alt={data.attributes.titles.en}
-            />
-            <CardContent>
-              <Typography gutterBottom variant="body1" component="div">
-                {data.attributes.titles.en}
-              </Typography>
-              <Rating
-                value={Number(data.attributes.averageRating) * 5 / 100}
-                readOnly
-                precision={0.05}
-                emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
-              />
-              <Stack direction="row" spacing={1}>
-                <Chip icon={<MilitaryTechIcon />} label={data.attributes.ratingRank} color="secondary" variant="outlined" size="small" />
-                {data.attributes.status == 'finished' ? (
-                  <Chip icon={<CheckCircleRoundedIcon />} label={data.attributes.status} color="error" variant="outlined" size="small" />
-                ) : (
-                  <Chip icon={<ScheduleRoundedIcon />} label={data.attributes.status} color="success" variant="outlined" size="small" />
-                )}
-              </Stack>
-            </CardContent>
-            <CardActions className='flex justify-end'>
-              <ModalBox value={data.attributes} />
-            </CardActions>
-          </Card>
-        ))}
-      </>
-    )
-  }
-
   return (
     <div className="flex min-h-screen flex-col gap-8 items-center p-4 lg:p-16 bg-gray-400">
       <TextField
-      sx={{ width: '40ch' }}
+        sx={{ width: '40ch' }}
         value={formik.values.searchTitle}
         onChange={formik.handleChange}
         name='searchTitle'
@@ -168,14 +125,52 @@ export default function Home() {
         onChange={(e, value) => setCurrentPage(value)}
         shape="rounded" />
       <div className='grid grid-cols-2 gap-4 lg:grid-cols-3'>
-        <CardAnime />
+        <CardAnime value={AniData} />
       </div>
       <ScrollToTopButton />
     </div>
   )
 }
 
-function ModalBox(props: any) {
+function CardAnime({ value }: any) {
+  return (
+    <>
+      {value.map((data: any) => (
+        <Card key={data.id} sx={{ maxWidth: 345 }} className='rounded-xl'>
+          <CardMedia
+            component="img"
+            height=""
+            image={data.attributes.posterImage.small}
+            alt={data.attributes.titles.en}
+          />
+          <CardContent>
+            <Typography gutterBottom variant="body1" component="div">
+              {data.attributes.titles.en}
+            </Typography>
+            <Rating
+              value={Number(data.attributes.averageRating) * 5 / 100}
+              readOnly
+              precision={0.05}
+              emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+            />
+            <Stack direction="row" spacing={1}>
+              <Chip icon={<MilitaryTechIcon />} label={data.attributes.ratingRank} color="secondary" variant="outlined" size="small" />
+              {data.attributes.status == 'finished' ? (
+                <Chip icon={<CheckCircleRoundedIcon />} label={data.attributes.status} color="error" variant="outlined" size="small" />
+              ) : (
+                <Chip icon={<ScheduleRoundedIcon />} label={data.attributes.status} color="success" variant="outlined" size="small" />
+              )}
+            </Stack>
+          </CardContent>
+          <CardActions className='flex justify-end'>
+            <ModalBox value={data.attributes} />
+          </CardActions>
+        </Card>
+      ))}
+    </>
+  )
+}
+function ModalBox({value}: any) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -191,17 +186,17 @@ function ModalBox(props: any) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {props.value.titles.en}
+          {value.titles.en}
         </DialogTitle>
         <DialogContent>
           <CardMedia
             component="img"
             height=""
-            image={props.value.posterImage.medium}
-            alt={props.value.titles.en}
+            image={value.posterImage.medium}
+            alt={value.titles.en}
           />
           <DialogContentText id="alert-dialog-description">
-            {props.value.description}
+            {value.description}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
