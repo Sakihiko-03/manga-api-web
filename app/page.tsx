@@ -1,42 +1,13 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { FormControl, FormLabel, TextField, RadioGroup, FormControlLabel, Radio, Card, Button, CardActionArea, CardActions, CardMedia, CardContent, Typography, Pagination, Stack } from '@mui/material';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Chip, Rating } from '@mui/material';
-import StarIcon from '@mui/icons-material/Star';
-import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
-import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
-import ScheduleRoundedIcon from '@mui/icons-material/ScheduleRounded';
-import { useFormik, Formik, Form, Field } from 'formik';
-import axios from 'axios';
+import { FormControl, FormLabel, TextField, RadioGroup, FormControlLabel, Radio, Pagination } from '@mui/material';
+import { useFormik } from 'formik';
 import ScrollToTopButton from '@/components/button_to_top';
-
-type AniData = {
-  id: string;
-  type: string;
-  attributes: Attributes;
-};
-
-type Attributes = {
-  titles: Titles;
-  description: string;
-  ratingRank: string;
-  averageRating: string;
-  status: string;
-  posterImage: PosterImage;
-};
-
-type Titles = {
-  en: string;
-  en_jp: string;
-};
-
-type PosterImage = {
-  small: string;
-  medium: string;
-};
+import CardAnime from '@/components/card_ani';
+import GetAnimeData from './api/route';
 
 export default function Home() {
-  const [AniData, setAniData] = useState<AniData[]>([]);
+  const [AniData, setAniData] = useState<any[]>([]);
   const [TotalAni, setTotalAni] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -49,51 +20,13 @@ export default function Home() {
   });
 
   useEffect(() => {
-    GetAnimeData(currentPage, formik.values.searchTitle, formik.values.searchCategories);
-  }, [currentPage, formik.values.searchTitle, formik.values.searchCategories]);
-
-  const GetAnimeData = async (page: number, searchTitle?: string, searchCategories?: string) => {
-    try {
-      // const apiRank = 'https://kitsu.io/api/edge/anime?sort=ratingRank';
-      let api = `https://kitsu.io/api/edge/anime`;
-
-      // pagination chat gpt มามันเลื่อน offset เอา
-      const offset = (page - 1) * 20;
-      api += `?page[limit]=20&page[offset]=${offset}`;
-
-      // TextField before Radio
-      if (searchTitle !== '') {
-        api += `&filter[text]=${searchTitle}`;
-        if (searchCategories !== '') {
-          api += `&filter[categories]=${searchCategories}`;
-        }
-      }
-
-      // Radio before TextField
-      else if (searchCategories !== '') {
-        api += `&filter[categories]=${searchCategories}`;
-        if (searchTitle !== '') {
-          api += `&filter[text]=${searchTitle}`;
-        }
-      }
-
-      else {
-        api += `&sort=ratingRank`;
-      }
-
-      const response = await axios.get(api);
-
-      if (response.status === 200) {
-        const data = response.data.data;
-        setAniData(data);
-        const count = response.data.meta.count;
-        setTotalAni(count);
-      }
-    } catch (error) {
-      console.error(error);
+    const getData = async () => {
+      const { data, count }: any = await GetAnimeData(currentPage, formik.values.searchTitle, formik.values.searchCategories);
+      setAniData(data);
+      setTotalAni(count);
     }
-
-  }
+    getData();
+  }, [currentPage, formik.values.searchTitle, formik.values.searchCategories]);
 
   return (
     <div className="flex min-h-screen flex-col gap-8 items-center p-4 lg:p-16 bg-gray-400">
@@ -132,77 +65,3 @@ export default function Home() {
   )
 }
 
-function CardAnime({ value }: any) {
-  return (
-    <>
-      {value.map((data: any) => (
-        <Card key={data.id} sx={{ maxWidth: 345 }} className='rounded-xl'>
-          <CardMedia
-            component="img"
-            height=""
-            image={data.attributes.posterImage.small}
-            alt={data.attributes.titles.en}
-          />
-          <CardContent>
-            <Typography gutterBottom variant="body1" component="div">
-              {data.attributes.titles.en}
-            </Typography>
-            <Rating
-              value={Number(data.attributes.averageRating) * 5 / 100}
-              readOnly
-              precision={0.05}
-              emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
-            />
-            <Stack direction="row" spacing={1}>
-              <Chip icon={<MilitaryTechIcon />} label={data.attributes.ratingRank} color="secondary" variant="outlined" size="small" />
-              {data.attributes.status == 'finished' ? (
-                <Chip icon={<CheckCircleRoundedIcon />} label={data.attributes.status} color="error" variant="outlined" size="small" />
-              ) : (
-                <Chip icon={<ScheduleRoundedIcon />} label={data.attributes.status} color="success" variant="outlined" size="small" />
-              )}
-            </Stack>
-          </CardContent>
-          <CardActions className='flex justify-end'>
-            <ModalBox value={data.attributes} />
-          </CardActions>
-        </Card>
-      ))}
-    </>
-  )
-}
-function ModalBox({value}: any) {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  return (
-    <div>
-      <Button onClick={handleOpen}>
-        info
-      </Button>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {value.titles.en}
-        </DialogTitle>
-        <DialogContent>
-          <CardMedia
-            component="img"
-            height=""
-            image={value.posterImage.medium}
-            alt={value.titles.en}
-          />
-          <DialogContentText id="alert-dialog-description">
-            {value.description}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>close</Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-  );
-}

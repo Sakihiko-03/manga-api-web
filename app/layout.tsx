@@ -1,9 +1,5 @@
 import ButtonAppBar from '@/components/Navbar'
 import './globals.css'
-import { Inter } from 'next/font/google'
-import BackToTop from '@/components/button_to_top';
-
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'Create Next App',
@@ -17,10 +13,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <ButtonAppBar />
         <main>{children}</main>
-        {/* <BackToTop /> */}
       </body>
     </html>
   )
