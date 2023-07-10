@@ -5,11 +5,13 @@ import { useFormik } from 'formik';
 import ScrollToTopButton from '@/components/button_to_top';
 import CardAnime from '@/components/card_ani';
 import GetAnimeData from './api/route';
+import SkeletonCard from '@/components/skeleton';
 
 export default function Home() {
   const [AniData, setAniData] = useState<any[]>([]);
   const [TotalAni, setTotalAni] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showSkeleton, setShowSkeleton] = useState(true);
 
   const formik = useFormik({
     initialValues: {
@@ -21,9 +23,13 @@ export default function Home() {
 
   useEffect(() => {
     const getData = async () => {
-      const { data, count }: any = await GetAnimeData(currentPage, formik.values.searchTitle, formik.values.searchCategories);
+      const { data, count }: any = await GetAnimeData(
+        currentPage,
+        formik.values.searchTitle,
+        formik.values.searchCategories);
       setAniData(data);
       setTotalAni(count);
+      setShowSkeleton(false);
     }
     getData();
   }, [currentPage, formik.values.searchTitle, formik.values.searchCategories]);
@@ -57,9 +63,16 @@ export default function Home() {
         page={currentPage}
         onChange={(e, value) => setCurrentPage(value)}
         shape="rounded" />
-      <div className='grid grid-cols-2 gap-4 lg:grid-cols-3'>
-        <CardAnime value={AniData} />
-      </div>
+      {
+        showSkeleton ? (
+          <SkeletonCard />
+        ) : (
+          <>
+            <div className='grid grid-cols-2 gap-4 lg:grid-cols-3'>
+              <CardAnime value={AniData} />
+            </div>
+          </>
+        )}
       <ScrollToTopButton />
     </div>
   )

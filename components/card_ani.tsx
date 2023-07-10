@@ -25,7 +25,7 @@ export default function CardAnime({ value }: any) {
                         <Rating
                             value={Number(data.attributes.averageRating) * 5 / 100}
                             readOnly
-                            precision={0.05}
+                            precision={0.1}
                             emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
                         />
                         <Stack direction="row" spacing={1}>
