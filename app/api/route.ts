@@ -7,38 +7,21 @@ const GetAnimeData = async (page: number, searchTitle?: string, searchCategories
       const limit = 20;
       const offset = (page - 1) * 20;
       const sortDefault = 'ratingRank';
-      let params: any = {
+      const params: any = {
         'page[limit]': limit,
         'page[offset]': offset,
+        'filter[text]': searchTitle || undefined,
+        'filter[categories]': searchCategories || undefined,
+        'sort': searchTitle || searchCategories ? undefined : sortDefault,
       };
+      // NOTE: params that are null or undefined are not rendered in the URL.
       
-      if (searchTitle !== '') {
-        params['filter[text]'] = searchTitle;
-        if (searchCategories !== '') {
-          params['filter[categories]'] = searchCategories;
-        }
-      }
-  
-      else if (searchCategories !== '') {
-        params['filter[categories]'] = searchCategories;
-        if (searchTitle !== '') {
-          params['filter[text]'] = searchTitle;
-        }
-      }
-
-      else{
-        params['sort'] = sortDefault;
-      }
-      // console.log(params)
       const response = await axios.get(url, { params });
 
       if (response.status === 200) {
         const data = response.data.data;
         const count = response.data.meta.count;
-        return {
-            data: data,
-            count: count
-          };
+        return { count, data };
       }
     } catch (error) {
       console.error(error);
