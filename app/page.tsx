@@ -5,7 +5,7 @@ import { useFormik } from 'formik';
 import ScrollToTopButton from '@/components/button_to_top';
 import CardAnime from '@/components/card_ani';
 import GetAnimeData from './api/route';
-import SkeletonCard from '@/components/skeleton';
+import SkeletonCardList from '@/components/skeleton';
 
 export default function Home() {
   const [AniData, setAniData] = useState<any[]>([]);
@@ -65,7 +65,7 @@ export default function Home() {
         shape="rounded" />
       {
         showSkeleton ? (
-          <SkeletonCard />
+          <SkeletonCardList />
         ) : (
           <>
             <div className='grid grid-cols-2 gap-4 lg:grid-cols-3'>

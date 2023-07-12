@@ -1,6 +1,6 @@
 'use client'
-import React, { useState, useEffect } from 'react';
-import { Card, Button, CardActionArea, CardActions, CardMedia, CardContent, Typography, Pagination, Stack } from '@mui/material';
+import React, { useState } from 'react';
+import { Card, Button, CardActions, CardMedia, CardContent, Typography, Pagination, Stack } from '@mui/material';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Chip, Rating } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
@@ -10,8 +10,8 @@ import ScheduleRoundedIcon from '@mui/icons-material/ScheduleRounded';
 export default function CardAnime({ value }: any) {
     return (
         <>
-            {value.map((data: any) => (
-                <Card key={data.id} sx={{ maxWidth: 345 }} className='rounded-xl'>
+            {value.map((data: any, index: any) => (
+                <Card key={`${data.id}-${index}`} sx={{ maxWidth: 345 }} className='rounded-xl'>
                     <CardMedia
                         component="img"
                         height=""
@@ -19,7 +19,7 @@ export default function CardAnime({ value }: any) {
                         alt={data.attributes.titles.en}
                     />
                     <CardContent>
-                        <Typography gutterBottom component="div" className='text-sm lg:text-xl'>
+                        <Typography gutterBottom className='text-sm lg:text-xl'>
                             {data.attributes.titles.en}
                         </Typography>
                         <Rating
@@ -38,7 +38,7 @@ export default function CardAnime({ value }: any) {
                         </Stack>
                     </CardContent>
                     <CardActions className='flex justify-end'>
-                        <ModalBox value={data.attributes} />
+                        <ModalBox title={data.attributes.titles.en} description={data.attributes.description} image={data.attributes.posterImage.original}/>
                     </CardActions>
                 </Card>
             ))}
@@ -62,17 +62,17 @@ function ModalBox(props: any) {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    {props.value.titles.en}
+                    {props.titles}
                 </DialogTitle>
                 <DialogContent>
                     <CardMedia
                         component="img"
                         height=""
-                        image={props.value.posterImage.original}
-                        alt={props.value.titles.en}
+                        image={props.image}
+                        alt={props.title}
                     />
                     <DialogContentText id="alert-dialog-description">
-                        {props.value.description}
+                        {props.description}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
