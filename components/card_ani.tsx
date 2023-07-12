@@ -16,11 +16,11 @@ export default function CardAnime({ value }: any) {
                         component="img"
                         height=""
                         image={data.attributes.posterImage.medium}
-                        alt={data.attributes.titles.en}
+                        alt={data.attributes.titles.en || data.attributes.titles.en_jp}
                     />
                     <CardContent>
                         <Typography gutterBottom className='text-sm lg:text-xl'>
-                            {data.attributes.titles.en}
+                            {data.attributes.titles.en || data.attributes.titles.en_jp}
                         </Typography>
                         <Rating
                             value={Number(data.attributes.averageRating) * 5 / 100}
@@ -38,7 +38,7 @@ export default function CardAnime({ value }: any) {
                         </Stack>
                     </CardContent>
                     <CardActions className='flex justify-end'>
-                        <ModalBox title={data.attributes.titles.en} description={data.attributes.description} image={data.attributes.posterImage.original}/>
+                        <ModalBox title={data.attributes.titles.en || data.attributes.titles.en_jp} description={data.attributes.description} image={data.attributes.posterImage.original}/>
                     </CardActions>
                 </Card>
             ))}
@@ -62,7 +62,7 @@ function ModalBox(props: any) {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    {props.titles}
+                    {props.title}
                 </DialogTitle>
                 <DialogContent>
                     <CardMedia
