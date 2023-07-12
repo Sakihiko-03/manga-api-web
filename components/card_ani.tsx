@@ -10,8 +10,8 @@ import ScheduleRoundedIcon from '@mui/icons-material/ScheduleRounded';
 export default function CardAnime({ value }: any) {
     return (
         <>
-            {value.map((data: any, index: any) => (
-                <Card key={`${data.id}-${index}`} sx={{ maxWidth: 345 }} className='rounded-xl'>
+            {value.map((data: any) => (
+                <Card key={data.id} sx={{ maxWidth: 345 }} className='rounded-xl'>
                     <CardMedia
                         component="img"
                         height=""

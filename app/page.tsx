@@ -65,7 +65,9 @@ export default function Home() {
         shape="rounded" />
       {
         showSkeleton ? (
+          <>
           <SkeletonCardList />
+          </>
         ) : (
           <>
             <div className='grid grid-cols-2 gap-4 lg:grid-cols-3'>
