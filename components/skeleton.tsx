@@ -1,6 +1,6 @@
 import React from 'react'
 
-function SkeletonCard() {
+const SkeletonCard = () => {
     return (
         <>
             <div className="w-full h-full rounded-xl overflow-hidden bg-gray-100/20">
@@ -19,7 +19,7 @@ function SkeletonCard() {
     )
 }
 
-function SkeletonCardList() {
+const SkeletonCardList = () => {
     let skeletonCards = [];
 
     for (let i = 0; i < 20; i++) {

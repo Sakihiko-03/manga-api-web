@@ -6,11 +6,17 @@ import StarIcon from '@mui/icons-material/Star';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import ScheduleRoundedIcon from '@mui/icons-material/ScheduleRounded';
+import { Anime } from '@/types/anime';
 
-export default function CardAnime({ value }: any) {
+interface CardAnimeProps {
+    value: Anime[] | undefined;
+}
+
+// export default function CardAnime({ value }: CardAnimeProps) {
+const CardAnime: React.FC<CardAnimeProps> = ({ value }) => {
     return (
         <>
-            {value.map((data: any) => (
+            {value?.map((data: Anime) => (
                 <Card key={data.id} sx={{ maxWidth: 345 }} className='rounded-xl'>
                     <CardMedia
                         component="img"
@@ -38,15 +44,22 @@ export default function CardAnime({ value }: any) {
                         </Stack>
                     </CardContent>
                     <CardActions className='flex justify-end'>
-                        <ModalBox title={data.attributes.titles.en || data.attributes.titles.en_jp} description={data.attributes.description} image={data.attributes.posterImage.original}/>
+                        <ModalBox title={data.attributes.titles.en || data.attributes.titles.en_jp} description={data.attributes.description} image={data.attributes.posterImage.original} />
                     </CardActions>
                 </Card>
             ))}
         </>
     )
 }
+export default CardAnime;
 
-function ModalBox(props: any) {
+interface ModalBoxProps {
+    title: string;
+    description: string;
+    image: string;
+}
+// destructuring props -> {title, description, image}
+const ModalBox: React.FC<ModalBoxProps> = ({ title, description, image }) => {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -62,17 +75,17 @@ function ModalBox(props: any) {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    {props.title}
+                    {title}
                 </DialogTitle>
                 <DialogContent>
                     <CardMedia
                         component="img"
                         height=""
-                        image={props.image}
-                        alt={props.title}
+                        image={image}
+                        alt={title}
                     />
                     <DialogContentText id="alert-dialog-description">
-                        {props.description}
+                        {description}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

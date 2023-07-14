@@ -5,7 +5,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 const pages = ['Example', 'Example', 'Example'];
 
-function ResponsiveAppBar() {
+const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -67,7 +67,7 @@ function ResponsiveAppBar() {
                   display: { xs: 'block', md: 'none' },
                 }}
               >
-                {pages.map((page,index) => (
+                {pages.map((page, index) => (
                   <MenuItem key={index} onClick={handleCloseNavMenu}>
                     <Typography textAlign="center">{page}</Typography>
                   </MenuItem>
@@ -75,7 +75,7 @@ function ResponsiveAppBar() {
               </Menu>
             </Box>
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              {pages.map((page,index) => (
+              {pages.map((page, index) => (
                 <Button
                   key={index}
                   onClick={handleCloseNavMenu}

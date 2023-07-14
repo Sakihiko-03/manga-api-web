@@ -6,9 +6,13 @@ import ScrollToTopButton from '@/components/button_to_top';
 import CardAnime from '@/components/card_ani';
 import GetAnimeData from './api/route';
 import SkeletonCardList from '@/components/skeleton';
+import { Anime } from '@/types/anime';
 
-export default function Home() {
-  const [AniData, setAniData] = useState<any[]>([]);
+// PascalCase ชื่อไฟล์ component
+// camelCase ตัวแปร, .ts
+
+const Home = () => {
+  const [AniData, setAniData] = useState<Anime[]>();
   const [TotalAni, setTotalAni] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [showSkeleton, setShowSkeleton] = useState(true);
@@ -23,12 +27,12 @@ export default function Home() {
 
   useEffect(() => {
     const getData = async () => {
-      const { data, count }: any = await GetAnimeData(
+      const { data, count } = await GetAnimeData(
         currentPage,
         formik.values.searchTitle,
         formik.values.searchCategories);
       setAniData(data);
-      setTotalAni(count);
+      setTotalAni(count ?? NaN);
       setShowSkeleton(false);
     }
     getData();
@@ -80,3 +84,4 @@ export default function Home() {
   )
 }
 
+export default Home;
