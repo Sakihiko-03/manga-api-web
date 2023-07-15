@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+// import React, { useState, useEffect } from 'react';
 import { FormControl, FormLabel, TextField, RadioGroup, FormControlLabel, Radio, Pagination } from '@mui/material';
 import { useFormik } from 'formik';
 import ScrollToTopButton from '@/components/button_to_top';
@@ -7,15 +7,34 @@ import CardAnime from '@/components/card_ani';
 import GetAnimeData from './api/route';
 import SkeletonCardList from '@/components/skeleton';
 import { Anime } from '@/types/anime';
+import { useAppDispatch, useAppSelector } from '@/store/hook';
+import { RootState, store } from '@/store/store';
+import { useEffect } from 'react';
+import { setAniData, setCurrentPage, setShowSkeleton, setTotalAni } from '@/store/slices/animeSlice';
+import { Provider } from 'react-redux';
 
 // PascalCase ชื่อไฟล์ component
 // camelCase ตัวแปร, .ts
+const App = () => {
+  return (
+    <Provider store={store}>
+      <Home />
+    </Provider>
+  )
+}
+
+export default App
 
 const Home = () => {
-  const [AniData, setAniData] = useState<Anime[]>();
-  const [TotalAni, setTotalAni] = useState<number>(1);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [showSkeleton, setShowSkeleton] = useState(true);
+  // const [AniData, setAniData] = useState<Anime[]>();
+  // const [TotalAni, setTotalAni] = useState<number>(1);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [showSkeleton, setShowSkeleton] = useState(true);
+  const dispatch = useAppDispatch();
+  const aniData = useAppSelector((state: RootState) => state.anime.aniData);
+  const totalAni = useAppSelector((state: RootState) => state.anime.totalAni);
+  const currentPage = useAppSelector((state: RootState) => state.anime.currentPage);
+  const showSkeleton = useAppSelector((state: RootState) => state.anime.showSkeleton);
 
   const formik = useFormik({
     initialValues: {
@@ -31,9 +50,12 @@ const Home = () => {
         currentPage,
         formik.values.searchTitle,
         formik.values.searchCategories);
-      setAniData(data);
-      setTotalAni(count ?? NaN);
-      setShowSkeleton(false);
+      // setAniData(data);
+      // setTotalAni(count ?? NaN);
+      // setShowSkeleton(false);
+      dispatch(setAniData(data));
+      dispatch(setTotalAni(count ?? NaN));
+      dispatch(setShowSkeleton(false));
     }
     getData();
   }, [currentPage, formik.values.searchTitle, formik.values.searchCategories]);
@@ -63,9 +85,9 @@ const Home = () => {
         </RadioGroup>
       </FormControl>
       <Pagination
-        count={Math.ceil(TotalAni / 20)}
+        count={Math.ceil(totalAni / 20)}
         page={currentPage}
-        onChange={(e, value) => setCurrentPage(value)}
+        onChange={(e, value) => dispatch(setCurrentPage(value))}
         shape="rounded" />
       {
         showSkeleton ? (
@@ -75,7 +97,7 @@ const Home = () => {
         ) : (
           <>
             <div className='grid grid-cols-2 gap-4 lg:grid-cols-3'>
-              <CardAnime value={AniData} />
+              <CardAnime value={aniData} />
             </div>
           </>
         )}
@@ -84,4 +106,4 @@ const Home = () => {
   )
 }
 
-export default Home;
+// export default Home;
