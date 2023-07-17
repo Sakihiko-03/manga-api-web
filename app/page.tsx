@@ -3,24 +3,16 @@ import { FormControl, FormLabel, TextField, RadioGroup, FormControlLabel, Radio,
 import { useFormik } from 'formik';
 import ScrollToTopButton from '@/components/ButtonToTop';
 import CardAnime from '@/components/CardAnime';
-import GetAnimeData from './api/route';
+import GetAnimeData from '../api/animeApi';
 import SkeletonCardList from '@/components/SkeletonCard';
-import { RootState, store, useAppDispatch } from '@/store/store';
+import { RootState, store, useAppDispatch } from '@/store';
 import { useEffect } from 'react';
 import { setAniData, setCurrentPage, setShowSkeleton, setTotalAni } from '@/store/slices/animeSlice';
-import { Provider, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 // PascalCase ชื่อไฟล์ component
 // camelCase ตัวแปร, .ts
-const App = () => {
-  return (
-    <Provider store={store}>
-      <Home />
-    </Provider>
-  )
-}
 
-export default App
 const Home = () => {
   const dispatch = useAppDispatch();
   const aniData = useSelector((state: RootState) => state.anime.aniData);
@@ -95,4 +87,4 @@ const Home = () => {
   )
 }
 
-// export default Home;
+export default Home;
