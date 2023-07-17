@@ -5,7 +5,7 @@ import StarIcon from '@mui/icons-material/Star';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import ScheduleRoundedIcon from '@mui/icons-material/ScheduleRounded';
-import { Anime } from '@/anime';
+import { Anime } from '@/types/anime';
 
 interface CardAnimeProps {
     value: Anime[];

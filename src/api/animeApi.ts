@@ -1,4 +1,4 @@
-import { GetAnimeApiResponse } from "@/anime";
+import { GetAnimeApiResponse } from "@/types/anime";
 import axios from "axios";
 
 const getAnimeData = async (

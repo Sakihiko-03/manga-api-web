@@ -1,5 +1,5 @@
-import { Anime } from "@/anime";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { Anime } from "@/types/anime";
+import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 
