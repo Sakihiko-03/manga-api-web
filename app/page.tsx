@@ -7,11 +7,10 @@ import CardAnime from '@/components/card_ani';
 import GetAnimeData from './api/route';
 import SkeletonCardList from '@/components/skeleton';
 import { Anime } from '@/types/anime';
-import { useAppDispatch, useAppSelector } from '@/store/hook';
-import { RootState, store } from '@/store/store';
+import { RootState, store, useAppDispatch } from '@/store/store';
 import { useEffect } from 'react';
 import { setAniData, setCurrentPage, setShowSkeleton, setTotalAni } from '@/store/slices/animeSlice';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 
 // PascalCase ชื่อไฟล์ component
 // camelCase ตัวแปร, .ts
@@ -31,10 +30,10 @@ const Home = () => {
   // const [currentPage, setCurrentPage] = useState(1);
   // const [showSkeleton, setShowSkeleton] = useState(true);
   const dispatch = useAppDispatch();
-  const aniData = useAppSelector((state: RootState) => state.anime.aniData);
-  const totalAni = useAppSelector((state: RootState) => state.anime.totalAni);
-  const currentPage = useAppSelector((state: RootState) => state.anime.currentPage);
-  const showSkeleton = useAppSelector((state: RootState) => state.anime.showSkeleton);
+  const aniData = useSelector((state: RootState) => state.anime.aniData);
+  const totalAni = useSelector((state: RootState) => state.anime.totalAni);
+  const currentPage = useSelector((state: RootState) => state.anime.currentPage);
+  const showSkeleton = useSelector((state: RootState) => state.anime.showSkeleton);
 
   const formik = useFormik({
     initialValues: {

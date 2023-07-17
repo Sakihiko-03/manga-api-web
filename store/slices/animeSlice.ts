@@ -22,18 +22,17 @@ export const animeSlice = createSlice({
   name: "anime",
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
-
   reducers: {
-    setAniData: (state, action) => {
+    setAniData: (state, action: PayloadAction<Anime[]>) => {
       state.aniData = action.payload;
     },
-    setTotalAni: (state, action) => {
+    setTotalAni: (state, action: PayloadAction<number>) => {
       state.totalAni = action.payload;
     },
-    setCurrentPage: (state, action) => {
+    setCurrentPage: (state, action: PayloadAction<number>) => {
       state.currentPage = action.payload;
     },
-    setShowSkeleton: (state, action) => {
+    setShowSkeleton: (state, action: PayloadAction<boolean>) => {
       state.showSkeleton = action.payload;
     },
   },
@@ -42,8 +41,5 @@ export const animeSlice = createSlice({
 // export const { increment, decrement, incrementByAmount } = animeSlice.actions;
 export const { setAniData, setTotalAni, setCurrentPage, setShowSkeleton } =
   animeSlice.actions;
-
-// Other code such as selectors can use the imported `RootState` type
-export const selectCount = (state: RootState) => state.counter.value;
 
 export default animeSlice.reducer;
