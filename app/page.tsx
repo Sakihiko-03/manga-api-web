@@ -1,12 +1,10 @@
 'use client'
-// import React, { useState, useEffect } from 'react';
 import { FormControl, FormLabel, TextField, RadioGroup, FormControlLabel, Radio, Pagination } from '@mui/material';
 import { useFormik } from 'formik';
-import ScrollToTopButton from '@/components/button_to_top';
-import CardAnime from '@/components/card_ani';
+import ScrollToTopButton from '@/components/ButtonToTop';
+import CardAnime from '@/components/CardAnime';
 import GetAnimeData from './api/route';
-import SkeletonCardList from '@/components/skeleton';
-import { Anime } from '@/types/anime';
+import SkeletonCardList from '@/components/SkeletonCard';
 import { RootState, store, useAppDispatch } from '@/store/store';
 import { useEffect } from 'react';
 import { setAniData, setCurrentPage, setShowSkeleton, setTotalAni } from '@/store/slices/animeSlice';
@@ -23,12 +21,7 @@ const App = () => {
 }
 
 export default App
-
 const Home = () => {
-  // const [AniData, setAniData] = useState<Anime[]>();
-  // const [TotalAni, setTotalAni] = useState<number>(1);
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [showSkeleton, setShowSkeleton] = useState(true);
   const dispatch = useAppDispatch();
   const aniData = useSelector((state: RootState) => state.anime.aniData);
   const totalAni = useSelector((state: RootState) => state.anime.totalAni);
@@ -49,9 +42,6 @@ const Home = () => {
         currentPage,
         formik.values.searchTitle,
         formik.values.searchCategories);
-      // setAniData(data);
-      // setTotalAni(count ?? NaN);
-      // setShowSkeleton(false);
       dispatch(setAniData(data));
       dispatch(setTotalAni(count ?? NaN));
       dispatch(setShowSkeleton(false));

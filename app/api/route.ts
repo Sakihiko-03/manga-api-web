@@ -29,10 +29,10 @@ const GetAnimeData = async (
       return { count, data };
     }
 
-    return { count: undefined, data: undefined };
+    return { count: undefined, data: [] };
   } catch (error) {
     console.error(error);
-    return { count: undefined, data: undefined };
+    return { count: undefined, data: [] };
   }
 };
 export default GetAnimeData;

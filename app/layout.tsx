@@ -1,4 +1,4 @@
-import ButtonAppBar from '@/components/Navbar'
+import Navber from '@/components/Navbar'
 import './globals.css'
 
 export const metadata = {
@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ButtonAppBar />
+        <Navber />
         <main>{children}</main>
       </body>
     </html>

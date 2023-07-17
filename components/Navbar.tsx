@@ -5,7 +5,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 const pages = ['Example', 'Example', 'Example'];
 
-const ResponsiveAppBar = () => {
+const Navber = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -91,4 +91,4 @@ const ResponsiveAppBar = () => {
     </AppBar>
   );
 }
-export default ResponsiveAppBar;
+export default Navber;
