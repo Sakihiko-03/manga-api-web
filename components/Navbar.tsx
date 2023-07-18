@@ -3,7 +3,7 @@ import * as React from 'react';
 import { AppBar, Box, Container, IconButton, Toolbar, Typography, Menu, Button, MenuItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
-const pages = ['Example', 'Example', 'Example'];
+const pages = ['test', 'test1', 'test2'];
 
 const Navber = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -69,7 +69,8 @@ const Navber = () => {
               >
                 {pages.map((page, index) => (
                   <MenuItem key={index} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page}</Typography>
+                    <Typography component="a"
+                      href={`/${page}`} textAlign="center">{page}</Typography>
                   </MenuItem>
                 ))}
               </Menu>

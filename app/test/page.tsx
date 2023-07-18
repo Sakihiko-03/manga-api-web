@@ -4,22 +4,22 @@ import { useFormik } from 'formik';
 import ScrollToTopButton from '@/components/ButtonToTop';
 import CardAnime from '@/components/CardAnime';
 import SkeletonCardList from '@/components/SkeletonCard';
-import { RootState, useAppDispatch } from '@/store';
+import { useAppDispatch } from '@/store';
 import { useEffect } from 'react';
+import { aniDataSelector, currentPageSelector, setAniData, setCurrentPage, setShowSkeleton, setTotalAni, showSkeletonSelector, totalAniSelector } from '@/store/slices/animeSlice';
 import { useSelector } from 'react-redux';
-import { fetchAniApi } from '@/store/slices/animeSlice2';
-import { setCurrentPage } from '@/store/slices/animeSlice2';
+import GetAnimeData from '@/api/animeApi';
 
 // PascalCase ชื่อไฟล์ component
 // camelCase ตัวแปร, .ts
 
 const Home = () => {
   const dispatch = useAppDispatch();
-  const aniData = useSelector((state: RootState) => state.anime2.aniData);
-  const totalAni = useSelector((state: RootState) => state.anime2.totalAni);
-  const currentPage = useSelector((state: RootState) => state.anime2.currentPage);
-  const showSkeleton = useSelector((state: RootState) => state.anime2.showSkeleton);
-
+  const aniData = useSelector(aniDataSelector);
+  const totalAni = useSelector(totalAniSelector);
+  const currentPage = useSelector(currentPageSelector);
+  const showSkeleton = useSelector(showSkeletonSelector);
+  
   const formik = useFormik({
     initialValues: {
       searchTitle: '',
@@ -29,11 +29,16 @@ const Home = () => {
   });
 
   useEffect(() => {
-    dispatch(fetchAniApi({
-      currentPage,
-      searchTitle: formik.values.searchTitle,
-      searchCategories: formik.values.searchCategories,
-    }));
+    const getData = async () => {
+      const { data, count } = await GetAnimeData(
+        currentPage,
+        formik.values.searchTitle,
+        formik.values.searchCategories);
+      dispatch(setAniData(data));
+      dispatch(setTotalAni(count ?? NaN));
+      dispatch(setShowSkeleton(false));
+    }
+    getData();
   }, [currentPage, formik.values.searchTitle, formik.values.searchCategories]);
 
   return (

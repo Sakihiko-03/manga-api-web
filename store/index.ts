@@ -2,11 +2,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import animeSlice from "./slices/animeSlice";
 import { useDispatch } from "react-redux";
+import animeSlice2 from "./slices/animeSlice2";
 
 export const store = configureStore({
   reducer: {
     // Add Slice Reducers to the Store
     anime: animeSlice,
+    anime2: animeSlice2,
   },
 });
 
