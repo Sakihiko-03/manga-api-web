@@ -8,8 +8,8 @@ interface AnimeState2 {
   totalAni: number;
   currentPage: number;
   showSkeleton: boolean;
-  searchTitle:string;
-  searchCategories:string;
+  searchTitle: string;
+  searchCategories: string;
 }
 
 const initialState: AnimeState2 = {
@@ -24,9 +24,21 @@ const initialState: AnimeState2 = {
 // First, create the thunk
 export const fetchAniApi = createAsyncThunk(
   'anime/fetch',
-  async ({ currentPage, searchTitle, searchCategories }: { currentPage: number, searchTitle: string, searchCategories: string }) => {
-      const { data, count } = await GetAnimeData(currentPage, searchTitle, searchCategories)
-      return { data, count }
+  async ({
+    currentPage,
+    searchTitle,
+    searchCategories,
+  }: {
+    currentPage: number;
+    searchTitle: string;
+    searchCategories: string;
+  }) => {
+    const { data, count } = await GetAnimeData(
+      currentPage,
+      searchTitle,
+      searchCategories
+    );
+    return { data, count };
   }
 );
 
@@ -34,20 +46,20 @@ export const animeSlice2 = createSlice({
   name: 'anime2',
   initialState,
   reducers: {
-    setCurrentPage: (state:AnimeState2, action: PayloadAction<number>) => {
-        state.currentPage = action.payload;
-      },
+    setCurrentPage: (state: AnimeState2, action: PayloadAction<number>) => {
+      state.currentPage = action.payload;
+    },
   },
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(fetchAniApi.pending, (state) => {
-        state.showSkeleton = true;
-      });
-      builder.addCase(fetchAniApi.fulfilled, (state, { payload }) => {
-        state.aniData = payload.data;
-        state.totalAni = payload.count ?? 0;
-        state.showSkeleton = false;
-      });
+      state.showSkeleton = true;
+    });
+    builder.addCase(fetchAniApi.fulfilled, (state, { payload }) => {
+      state.aniData = payload.data;
+      state.totalAni = payload.count ?? 0;
+      state.showSkeleton = false;
+    });
   },
 });
 

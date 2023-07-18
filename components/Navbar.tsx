@@ -17,15 +17,15 @@ const Navber = () => {
   };
 
   return (
-    <AppBar position="static" color="default">
-      <Container maxWidth="xl">
+    <AppBar position='static' color='default'>
+      <Container maxWidth='xl'>
         <Toolbar className='flex justify-between'>
           <div>
             <Typography
-              variant="h6"
+              variant='h6'
               noWrap
-              component="a"
-              href="/"
+              component='a'
+              href='/'
               sx={{
                 mr: 2,
                 fontWeight: 700,
@@ -40,17 +40,17 @@ const Navber = () => {
           <div>
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
               <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
+                size='large'
+                aria-label='account of current user'
+                aria-controls='menu-appbar'
+                aria-haspopup='true'
                 onClick={handleOpenNavMenu}
-                color="inherit"
+                color='inherit'
               >
                 <MenuIcon />
               </IconButton>
               <Menu
-                id="menu-appbar"
+                id='menu-appbar'
                 anchorEl={anchorElNav}
                 anchorOrigin={{
                   vertical: 'bottom',
@@ -69,8 +69,8 @@ const Navber = () => {
               >
                 {pages.map((page, index) => (
                   <MenuItem key={index} onClick={handleCloseNavMenu}>
-                    <Typography component="a"
-                      href={`/${page}`} textAlign="center">{page}</Typography>
+                    <Typography component='a'
+                      href={`/${page}`} textAlign='center'>{page}</Typography>
                   </MenuItem>
                 ))}
               </Menu>

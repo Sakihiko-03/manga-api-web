@@ -42,34 +42,34 @@ const Home = () => {
   }, [currentPage, formik.values.searchTitle, formik.values.searchCategories]);
 
   return (
-    <div className="flex min-h-screen flex-col gap-8 items-center p-4 lg:p-16 bg-gray-400">
+    <div className='flex min-h-screen flex-col gap-8 items-center p-4 lg:p-16 bg-gray-400'>
       <TextField
         sx={{ width: '40ch' }}
         value={formik.values.searchTitle}
         onChange={formik.handleChange}
         name='searchTitle'
-        id="outlined-basic"
-        label="Search"
-        variant="outlined" />
+        id='outlined-basic'
+        label='Search'
+        variant='outlined' />
       <FormControl>
-        <FormLabel id="demo-row-radio-buttons-group-label">Categories</FormLabel>
+        <FormLabel id='demo-row-radio-buttons-group-label'>Categories</FormLabel>
         <RadioGroup
           value={formik.values.searchCategories}
           onChange={formik.handleChange}
           row
-          aria-labelledby="demo-row-radio-buttons-group-label"
-          name="searchCategories">
-          <FormControlLabel value="action" control={<Radio />} label="action" />
-          <FormControlLabel value="music" control={<Radio />} label="music" />
-          <FormControlLabel value="sports" control={<Radio />} label="sports" />
-          <FormControlLabel value="fantasy" control={<Radio />} label="fantasy" />
+          aria-labelledby='demo-row-radio-buttons-group-label'
+          name='searchCategories'>
+          <FormControlLabel value='action' control={<Radio />} label='action' />
+          <FormControlLabel value='music' control={<Radio />} label='music' />
+          <FormControlLabel value='sports' control={<Radio />} label='sports' />
+          <FormControlLabel value='fantasy' control={<Radio />} label='fantasy' />
         </RadioGroup>
       </FormControl>
       <Pagination
         count={Math.ceil(totalAni / 20)}
         page={currentPage}
         onChange={(e, value) => dispatch(setCurrentPage(value))}
-        shape="rounded" />
+        shape='rounded' />
       {
         showSkeleton ? (
           <>

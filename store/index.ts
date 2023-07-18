@@ -1,8 +1,8 @@
 // Create a Redux Store
-import { configureStore } from "@reduxjs/toolkit";
-import animeSlice from "./slices/animeSlice";
-import { useDispatch } from "react-redux";
-import animeSlice2 from "./slices/animeSlice2";
+import { configureStore } from '@reduxjs/toolkit';
+import animeSlice from './slices/animeSlice';
+import { useDispatch } from 'react-redux';
+import animeSlice2 from './slices/animeSlice2';
 
 export const store = configureStore({
   reducer: {

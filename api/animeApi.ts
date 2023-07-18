@@ -1,5 +1,5 @@
-import axios from "axios";
-import { GetAnimeApiResponse } from "@/types/anime";
+import axios from 'axios';
+import { GetAnimeApiResponse } from '@/types/anime';
 
 const GetAnimeData = async (
   page: number,
@@ -8,15 +8,15 @@ const GetAnimeData = async (
 ) => {
   try {
     // const apiRank = 'https://kitsu.io/api/edge/anime?sort=ratingRank';
-    let url = "https://kitsu.io/api/edge/anime";
+    let url = 'https://kitsu.io/api/edge/anime';
     const limit = 20;
     const offset = (page - 1) * 20;
-    const sortDefault = "ratingRank";
+    const sortDefault = 'ratingRank';
     const params = {
-      "page[limit]": limit,
-      "page[offset]": offset,
-      "filter[text]": searchTitle || undefined,
-      "filter[categories]": searchCategories || undefined,
+      'page[limit]': limit,
+      'page[offset]': offset,
+      'filter[text]': searchTitle || undefined,
+      'filter[categories]': searchCategories || undefined,
       sort: searchTitle || searchCategories ? undefined : sortDefault,
     };
     // NOTE: params that are null or undefined are not rendered in the URL.

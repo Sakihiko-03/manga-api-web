@@ -1,7 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "..";
-import { Anime } from "@/types/anime";
+import { createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '..';
+import { Anime } from '@/types/anime';
 
 // Define a type for the slice state
 interface AnimeState {
@@ -19,7 +19,7 @@ const initialState: AnimeState = {
   showSkeleton: true,
 };
 export const animeSlice = createSlice({
-  name: "anime",
+  name: 'anime',
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
